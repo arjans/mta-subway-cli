@@ -1,6 +1,5 @@
 #!/usr/bin/ruby
 require 'csv'
-require 'pp'
 
 class String
   def color(c)
@@ -19,17 +18,8 @@ class String
     end
 end
 
-def getStopsIdsByName (stopName)
-  CSV.foreach("stops.txt") do |row|
-    if (row[2].downcase.match(/#{stopName.downcase}/)) then
-      return "#{row[0]}"
-    end
-  end
-end
-
 def generateStopsFile (userStops, filename)
   puts "Generating..."
-  pp userStops
   CSV.open(filename, "wb") do |csv|
     csv << ["stop_id", "day", "time"]
     i = 0
@@ -55,42 +45,56 @@ def getStopTimes (stopID, stops)
 
   time = (Time.now.hour * 3600) + (Time.now.min * 60) + Time.now.sec
   counter = 0
-
+  case stopID[0].chr
+  when "B", "D", "F", "M"
+    subwayColor = 101
+  when "1", "2", "3"
+    subwayColor = 41
+  when "4", "5", "6"
+    subwayColor = 42
+  when "G"
+    subwayColor = 102
+  when "N", "Q", "R"
+    subwayColor = 43
+  when "A", "C", "E"
+    subwayColor = 44
+  when "J", "Z"
+    subwayColor = 100
+  when "7"
+    subwayColor = 45
+  end
+  if (stopID[-1,1] == "N")
+    direction = "Northbound ".color(40).color(:white)
+  else
+    direction = "Southbound ".color(40).color(:white)
+  end
+  print "#{direction}"
+  print " #{stopID[0].chr} ".color(subwayColor).color(:white)
+  stops.each do |row|
+    if (row[0] == stopID) then
+      print " arriving at #{row[1]} at "
+      break
+    end
+  end
   stops.each do |row|
     if (row[0] == stopID && row[2] == day) then
       if (row[3].to_i > time) then
         hours = row[3].to_i / 3600
         minutes = (row[3].to_i - (hours * 3600)) / 60
         seconds = (row[3].to_i - (hours * 3600) - (minutes * 60))
-        subwayColor = ""
-        case row[0][0].chr
-        when "B", "D", "F", "M"
-          subwayColor = 101
-        when "1", "2", "3"
-          subwayColor = 41
-        when "4", "5", "6"
-          subwayColor = 42
-        when "G"
-          subwayColor = 102
-        when "N", "Q", "R"
-          subwayColor = 43
-        when "A", "C", "E"
-          subwayColor = 44
-        when "J", "Z"
-          subwayColor = 100
-        when "7"
-          subwayColor = 45
+        if (hours < 10)
+          hours = "0" + hours.to_s
         end
-        if (row[0][-1,1] == "N")
-          direction = "Northbound ".color(40).color(:white)
-        else
-          direction = "Southbound ".color(40).color(:white)
+        if (minutes < 10)
+          minutes = "0" + minutes.to_s
         end
-        print "#{direction}"
-        print " #{row[0][0].chr} ".color(subwayColor).color(:white)
-        puts " arriving at #{row[1]} at #{hours}:#{minutes}:#{seconds}"
+        if (seconds < 10)
+          seconds = "0" + seconds.to_s
+        end
+        print "#{hours}:#{minutes}:#{seconds} "
         counter += 1
         if (counter == 3) then
+          puts ""
           return true
         end
       end
