@@ -14,7 +14,7 @@ Setup
 
 Requirements & Dependencies
 ---------------------------
-- Ruby 1.9 >
+- Ruby >=1.8.7
 - zipruby gem
 
 

@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+require 'rubygems'
 require 'zipruby'
 require 'csv'
 require 'net/http'
