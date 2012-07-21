@@ -1,5 +1,6 @@
 MTA Subway CLI
 ==============
+![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
 This is a simple command line interface to the NYC MTA Subways. The jist of it is you can do something like ```subway.rb york north``` and you'll get the next few subway times for York Street Northbound.
 
 The one caveat is that you have to generate a stops.csv file from MTA's Open Subway data. This is necessary as parsing through ~5MB of data each run is not reasonable. generateStops.rb faciliates generating a concise CSV file (stops.csv) containing only the stop times necessary for you.
@@ -20,8 +21,12 @@ Usage
 
 **Examples:**
 - ```./subway```
-- ```./subway.rb prospect north```
+* ![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
+- ```./subway.rb herald north```
+* ![MTA Subway CLI Herald North](http://userbound.com/images/mta-subway-cli/herald-north.png)
 - ```./subway.rb york s```
+* ![MTA Subway CLI 33 S](http://userbound.com/images/mta-subway-cli/33-s.png)
+
 
 Requirements & Dependencies
 ---------------------------
