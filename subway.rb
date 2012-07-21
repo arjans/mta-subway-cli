@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 require 'csv'
-require 'pp'
+
+$filename = "stops.csv"
 
 class String
   def color(c)
@@ -88,19 +89,18 @@ def getStopTimes (stopID, stops)
   end
 end
 
-def loadStopsFile (filename)
-  stops =  CSV.read(filename)
+def loadStopsFile ($filename)
+  stops =  CSV.read($filename)
   return stops
 end
 
 def main
-  filename = "custom_stops.txt"
 
-  if (!File.exists?(filename))
+  if (!File.exists?($filename))
     puts "Please run 'generateStops.rb'."
   end
 
-  stops = loadStopsFile(filename)
+  stops = loadStopsFile($filename)
   uniqueStops = []
 
   if (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) then
