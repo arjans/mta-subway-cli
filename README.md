@@ -15,13 +15,13 @@ Setup
 Usage
 -----
 ```subway.rb stop-name [north/south]```
-	- ```-n #```: Specifies the number of upcoming stops to output
-	- ```-no-color```: Removes color from the output
+- ```-n #```: Specifies the number of upcoming stops to output
+- ```-no-color```: Removes color from the output
 
 **Examples:**
-	- ```./subway.rb prospect north```
-	- ```./subway.rb york s```
-	- ```./subway```
+- ```./subway.rb prospect north```
+- ```./subway.rb york s```
+- ```./subway```
 
 Requirements & Dependencies
 ---------------------------
