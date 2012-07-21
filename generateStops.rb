@@ -90,11 +90,10 @@ def main
 	mtaDomain  = $mtaSubwayData.split('/')[0]
 	subwayData = $mtaSubwayData[mtaDomain.length .. $mtaSubwayData.length]
 
-
 	printHeader
-	if (ARGV[0]) then
-		$outputFile = ARGV[0]
-	elsif (File.exists?($outputFile)) then
+	$outputFile = ARGV[0] ? ARGV[0] : $outputFile
+
+	if (File.exists?($outputFile)) then
 		print "#{$outputFile} already exists. Continue/Overwrite? [Y/N]: ".color(:red)
 		if (!(gets.chomp! =~ /y/i)) then
 			puts "Please rerun generateStops.rb with a non-existant file"
