@@ -6,16 +6,11 @@ The one caveat is that you have to generate a stops.csv file from MTA's Open Sub
 
 Setup
 -----
-1. Clone the repo
-	```git clone http://github.com/jns2/mta-subway-cli```
-2. Go into the directory
-	```cd mta-subway-cli```
-3. Install the ```zipruby``` gem
-	```gem install zipruby```
-3. Run ```generateStops.rb``` to generate a stops.csv file from the MTA's data
-	```ruby generateStops.rb```
-4. Use subway.rb!
-	```ruby subway.rb```
+1. Clone the repo:           ```git clone http://github.com/jns2/mta-subway-cli```
+2. Go into the directory:    ```cd mta-subway-cli```
+3. Install the zipruby gem:  ```gem install zipruby```
+3. Run ```generateStops.rb:  ```ruby generateStops.rb```
+4. That's it, Use subway.rb: ```ruby subway.rb```
 
 Requirements & Dependencies
 ---------------------------
