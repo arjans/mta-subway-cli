@@ -94,21 +94,45 @@ def loadStopsFile (filename)
 end
 
 def main
-  puts ARGV[0]
   filename = "custom_stops.txt"
+
   if (!File.exists?(filename))
-    puts "Please run 'generate stops'."
+    puts "Please run 'generateStops.rb'."
   end
+
   stops = loadStopsFile(filename)
+  uniqueStops = []
+
+  if (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) then
+    stops.each do |row|
+      if (row[1].downcase.match(ARGV[0].downcase) && (row[0][-1,1] == "S"))
+        uniqueStops.push(row[0])
+        break
+      end
+    end
+  end
+
+  if (ARGV.include?("S") || ARGV.include?("s") || ARGV.include?("South") || ARGV.include?("south")) then
+    stops.each do |row|
+      if (row[1].downcase.match(ARGV[0].downcase) && (row[0][-1,1] == "N"))
+        uniqueStops.push(row[0])
+        break
+      end
+    end
+  end
+
   if (ARGV[0]) then
     stops.each do |row|
-      if (row[1].match(ARGV[0]))
+      if (row[1].downcase.match(ARGV[0].downcase) && !(uniqueStops.include?(row[0])))
+        getStopTimes(row[0], stops)
+        uniqueStops.push(row[0])
+      end
+    end
   else
-    uniqueStops = []
     stops.each do |row|
       if (!uniqueStops.include?(row[0]) && !("stop_id" == row[0])) then
         uniqueStops.push(row[0])
-    end
+      end
     end
     uniqueStops.each do |row|
       getStopTimes(row, stops)
