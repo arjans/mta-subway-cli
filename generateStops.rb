@@ -31,9 +31,7 @@ def generateStopsFile (userStops, stopTimesCsv)
 	puts "    (This may take a little while, go brew some coffee)"
 	puts "    (But this is a one time proccess)"
   CSV.open($outputFile, "wb") do |csv|
-
     csv << ["stop_id", "day", "time"]
-    i = 0
     CSV.parse(stopTimesCsv) do |row|
       userStops.each do |stop|
         if (stop[0] == row[3]) then
@@ -107,23 +105,20 @@ def main
 	puts "--> Generated file will be stored in #{$outputFile.color(:red)}".color(:green)
 
 	puts "--> Fetching Subway Data from the MTA Site".color(:green);
+	puts "    (This may take a bit, the ZIP is around 5MB)"
+	puts "    (I hope you gots good internets)"
+
 	Net::HTTP.start(mtaDomain) do |http|
 		Zip::Archive.open_buffer(http.get(subwayData).response.body) do |zip|
 
-			#Get the stop times
-			stopsCsv = ""
-			zip.fopen("stops.txt") do |line|
-				stopsCsv = line.read
-			end
+			#Get the stop ids based on user input
+			stopsCsv = zip.fopen("stops.txt").read
 			stops = promptStops(stopsCsv)
 
-			stopTimesCsv =""
-			zip.fopen("stop_times.txt") do |line|
-				stopTimesCsv = line.read
-			end
+			#Get the stop times
+			stopTimesCsv = zip.fopen("stop_times.txt").read
+
 			generateStopsFile(stops, stopTimesCsv)
-
-
 		end
 	end
 end
