@@ -10,10 +10,18 @@ Setup
 	```git clone http://github.com/jns2/mta-subway-cli```
 2. Go into the directory
 	```cd mta-subway-cli```
+3. Install the ```zipruby``` gem
+	```gem install zipruby```
 3. Run ```generateStops.rb``` to generate a stops.csv file from the MTA's data
 	```ruby generateStops.rb```
 4. Use subway.rb!
 	```ruby subway.rb```
+
+Requirements & Dependencies
+---------------------------
+- Ruby 1.9 >
+- zipruby gem
+
 
 Authors
 -------
