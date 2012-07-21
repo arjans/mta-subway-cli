@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 require 'csv'
+require 'pp'
 
 class String
   def color(c)
@@ -16,24 +17,6 @@ class String
     }
     return "\e[#{colors[c] || c}m#{self}\e[0m"
     end
-end
-
-def generateStopsFile (userStops, filename)
-  puts "Generating..."
-  CSV.open(filename, "wb") do |csv|
-    csv << ["stop_id", "day", "time"]
-    i = 0
-    CSV.foreach("stop_times.txt") do |row|
-      userStops.each do |stop|
-        if (stop[0] == row[3]) then
-          day = row[0].match(/^[ABRS]\d+(WKD|SAT|SUN)/)[1]
-          hours,minutes,seconds = row[1].split(':')
-          seconds = seconds.to_i + (hours.to_i * 3600) + (minutes.to_i * 60)
-        csv << [row[3], stop[1], day, seconds]
-        end
-      end
-    end
-  end
 end
 
 def getStopTimes (stopID, stops)
@@ -72,7 +55,7 @@ def getStopTimes (stopID, stops)
   print " #{stopID[0].chr} ".color(subwayColor).color(:white)
   stops.each do |row|
     if (row[0] == stopID) then
-      print " arriving at #{row[1]} at "
+      print " arriving at #{row[1].color(:green)} at "
       break
     end
   end
@@ -82,6 +65,9 @@ def getStopTimes (stopID, stops)
         hours = row[3].to_i / 3600
         minutes = (row[3].to_i - (hours * 3600)) / 60
         seconds = (row[3].to_i - (hours * 3600) - (minutes * 60))
+        if (hours > 12)
+          hours = hours - 12
+        end
         if (hours < 10)
           hours = "0" + hours.to_s
         end
@@ -107,45 +93,27 @@ def loadStopsFile (filename)
   return stops
 end
 
-def promptStops
-  allstops = []
-  CSV.foreach("stops.txt") do |row|
-    allstops.push([row[0],row[2]])
-  end
-  userchoices = []
-  loop do
-    print "Enter the name of your stop (or 'done' when finished): "
-    stopname = gets.chomp!
-    if (stopname == "done") then
-      return userchoices
-    end
-    useroptions = []
-    allstops.each do |row|
-      if (row[0].match(/.+[NS]/) && row[1].downcase.match(/#{stopname.downcase}/)) then
-        puts "[#{useroptions.length.to_s.color(:blue)}] #{row[0]} #{row[1]}"
-        useroptions.push(row)
-      end
-    end
-    print "Enter your stop number(s), separated by spaces: "
-    stopchoices = gets.chomp!.split(' ')
-    stopchoices.each do |choice|
-      userchoices.push([useroptions[choice.to_i][0],useroptions[choice.to_i][1]])
-    end
-  end
-end
-
 def main
+  puts ARGV[0]
   filename = "custom_stops.txt"
   if (!File.exists?(filename))
-    userStops = promptStops
-    generateStopsFile(userStops, filename)
+    puts "Please run 'generate stops'."
   end
   stops = loadStopsFile(filename)
-  getStopTimes("F18N", stops)
-  getStopTimes("A40N", stops)
-  #getStopsIdsByName("prospect")
-  #getStopTimes("F25N")
-  #generateStopsFile(["F25N","F25S"])
+  if (ARGV[0]) then
+    stops.each do |row|
+      if (row[1].match(ARGV[0]))
+  else
+    uniqueStops = []
+    stops.each do |row|
+      if (!uniqueStops.include?(row[0]) && !("stop_id" == row[0])) then
+        uniqueStops.push(row[0])
+    end
+    end
+    uniqueStops.each do |row|
+      getStopTimes(row, stops)
+    end
+  end
 end
 
 main
