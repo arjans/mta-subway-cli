@@ -26,8 +26,12 @@ def printHeader
 end
 
 def generateStopsFile (userStops, stopTimesCsv)
-  puts "--> Generating Stops CSV...".color(:green)
+	printHeader
+  puts "--> Generating Stops CSV".color(:green)
+	puts "    (This may take a little while, go brew some coffee)"
+	puts "    (But this is a one time proccess)"
   CSV.open($outputFile, "wb") do |csv|
+
     csv << ["stop_id", "day", "time"]
     i = 0
     CSV.parse(stopTimesCsv) do |row|
@@ -50,30 +54,34 @@ def promptStops(stopsCsv)
   CSV.parse(stopsCsv) do |row|
     allstops.push([row[0],row[2]])
   end
-  userchoices = []
+  addedStops = []
   loop do
 		printHeader
-		print "Your Subway Stops:".color(:magenta)
-		userchoices.each do |choice|
-			print "#{choice}".color(:green)
+		if (addedStops.length > 0) then
+			puts"Your Subway Stops:".color(:magenta)
+			addedStops .each do |stop|
+				puts "#{stop[0]} - #{stop[1]}".color(:green)
+			end
+			print "\n\n"
 		end
 		
-    print "\n\nEnter a Subway Stop (ex: York, Prospect, 7th Ave) (or \"done\")\n> "
+    print "Add a Subway Stop (ex: York, Prospect, 7th Ave) (or \"done\")\n> "
     stopname = gets.chomp!
     if (stopname == "done") then
-      return userchoices
+      return addedStops 
     end
-    useroptions = []
+		print "\n"
+    options = []
     allstops.each do |row|
       if (row[0].match(/.+[NS]/) && row[1].downcase.match(/#{stopname.downcase}/)) then
-        puts "[#{useroptions.length.to_s}] #{row[0]} #{row[1]}"
-        useroptions.push(row)
+        print "[#{options.length.to_s}] ".color(:green)
+				puts "#{row[0].color(:blue)} #{row[1].color(:red)}"
+        options.push(row)
       end
     end
-    print "Enter your stop number(s), separated by spaces: "
-    stopchoices = gets.chomp!.split(' ')
-    stopchoices.each do |choice|
-      userchoices.push([useroptions[choice.to_i][0],useroptions[choice.to_i][1]])
+    print "\nEnter your stop number(s), separated by spaces: "
+    gets.chomp!.split(' ').each do |choice|
+      addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
     end
   end
 end
