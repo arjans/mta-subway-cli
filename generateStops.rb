@@ -30,7 +30,7 @@ def generateStopsFile (userStops, stopTimesCsv)
 	printHeader
   puts "--> Generating Stops CSV".color(:green)
 	puts "    (This may take a little while, go brew some coffee)"
-	puts "    (But this is a one time proccess)"
+	puts "    (No worries, this is a one time proccess)"
   CSV.open($outputFile, "wb") do |csv|
     csv << ["stop_id", "day", "time"]
     CSV.parse(stopTimesCsv) do |row|
@@ -45,7 +45,8 @@ def generateStopsFile (userStops, stopTimesCsv)
     end
   end
 
-	puts "--> Stops CSV File Generated, subway.rb may be used now"
+	printHeader
+	puts "--> Stops CSV File Generated to #{$outputFile}, subway.rb may be used now".color(:green)
 end
 
 def promptStops(stopsCsv)
@@ -65,7 +66,7 @@ def promptStops(stopsCsv)
 			print "\n\n"
 		end
 		
-    print "Add a Subway Stop (ex: York, Prospect, 7th Ave) (or \"done\")\n> "
+    print "Add a Subway Stop (ex: York, Prospect, 7 Ave) (or \"done\")\n> "
     stopname = gets.chomp!
     if (stopname == "done") then
       return addedStops 
@@ -79,7 +80,7 @@ def promptStops(stopsCsv)
         options.push(row)
       end
     end
-    print "\nEnter your stop number(s), separated by spaces: "
+    print "\nEnter desired #{"[stop numbers]".color(:green)}, separated by spaces (ex:  0 2 5)\n> "
     gets.chomp!.split(' ').each do |choice|
       addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
     end
