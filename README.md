@@ -20,4 +20,4 @@ Requirements & Dependencies
 
 Authors
 -------
-Created by Arjan Singer ([jns2](http://github.com/jns2)) and Miles Sandlar ([mil](http://github.com/mil))
+Created by Arjan Singh ([jns2](http://github.com/jns2)) and Miles Sandlar ([mil](http://github.com/mil))
