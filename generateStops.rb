@@ -9,14 +9,20 @@ $outputFile = "stops.csv"
 class String
 	def color(c)
 		colors = {
-			:red    => 31,
-			:green  => 32,
-			:yellow => 33,
-			:blue   => 34,
+			:red     => 31,
+			:green   => 32,
+			:yellow  => 33,
+			:blue    => 34,
 			:magenta => 35
 		}
 		return "\e[#{colors[c] || c}m#{self}\e[0m"
 	end
+end
+
+def printHeader
+	system("clear")
+	puts "generateStops.rb ::".color(:green) + " Generates a consise CSV database for subway.rb".color(:yellow)
+	puts "-----------------------------------------------------------------"
 end
 
 def generateStopsFile (userStops, stopTimesCsv)
@@ -40,8 +46,7 @@ def generateStopsFile (userStops, stopTimesCsv)
 end
 
 def promptStops(stopsCsv)
-	puts "--> Extracted Stops CSV, Parsing Now".color(:green)
-	puts "-----------------------------------------------------------------"
+	printHeader
 	puts "Add Subway Stops:".color(:magenta)
   allstops = []
   CSV.parse(stopsCsv) do |row|
@@ -73,9 +78,8 @@ def main
 	mtaDomain  = $mtaSubwayData.split('/')[0]
 	subwayData = $mtaSubwayData[mtaDomain.length .. $mtaSubwayData.length]
 
-	puts "generateStops.rb ::".color(:red) + " Generates a consise CSV database for subway.rb".color(:yellow)
-	puts "-----------------------------------------------------------------"
 
+	printHeader
 	if (ARGV[0]) then
 		$outputFile = ARGV[0]
 	elsif (File.exists?($outputFile)) then
@@ -85,6 +89,7 @@ def main
 			return
 		end
 	end
+	printHeader
 
 	puts "--> Generated file will be stored in #{$outputFile.color(:red)}".color(:green)
 
