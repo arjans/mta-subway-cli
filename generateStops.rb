@@ -46,15 +46,19 @@ def generateStopsFile (userStops, stopTimesCsv)
 end
 
 def promptStops(stopsCsv)
-	printHeader
-	puts "Add Subway Stops:".color(:magenta)
   allstops = []
   CSV.parse(stopsCsv) do |row|
     allstops.push([row[0],row[2]])
   end
   userchoices = []
   loop do
-    print "Enter the name of your stop (or 'done' when finished): "
+		printHeader
+		print "Your Subway Stops:".color(:magenta)
+		userchoices.each do |choice|
+			print "#{choice}".color(:green)
+		end
+		
+    print "\n\nEnter a Subway Stop (ex: York, Prospect, 7th Ave) (or \"done\")\n> "
     stopname = gets.chomp!
     if (stopname == "done") then
       return userchoices
