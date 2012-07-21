@@ -76,13 +76,17 @@ def promptStops(stopsCsv)
     allstops.each do |row|
       if (row[0].match(/.+[NS]/) && row[1].downcase.match(/#{stopname.downcase}/)) then
         print "[#{options.length.to_s}] ".color(:green)
-				puts "#{row[0].color(:blue)} #{row[1].color(:red)}"
+				print row[0][-1,-1] == 'n' ? "Northbound".color(:yellow) : "Southbound".color(:yellow)
+				print " #{row[0][0].to_s} Train".color(:magenta)
+				puts " at #{row[1].color(:red)}"
         options.push(row)
       end
     end
-    print "\nEnter desired #{"[stop numbers]".color(:green)}, separated by spaces (ex:  0 2 5)\n> "
+    print "\nEnter desired #{"[stop numbers]".color(:green)}, separated by spaces (ex: 0 2 5)\n> "
     gets.chomp!.split(' ').each do |choice|
-      addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
+			if (choice.to_i <= options.length) then
+				addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
+			end
     end
   end
 end
