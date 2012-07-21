@@ -61,7 +61,12 @@ def promptStops(stopsCsv)
 			puts"Your Subway Stops:".color(:magenta)
 			addedStops .each do |stop|
 				print "--> ".color(:yellow)
-				puts "#{stop[0]} - #{stop[1]}".color(:green)
+
+				print stop[0][-1,1] == "N" ? "Northbound".color(:yellow) : "Southbound".color(:yellow)
+				print " #{stop[0][0]} Train ".color(:magenta)
+				puts "at #{stop[1]} ".color(:red)
+
+
 			end
 			print "\n\n"
 		end
@@ -76,7 +81,7 @@ def promptStops(stopsCsv)
     allstops.each do |row|
       if (row[0].match(/.+[NS]/) && row[1].downcase.match(/#{stopname.downcase}/)) then
         print "[#{options.length.to_s}] ".color(:green)
-				print row[0][-1,-1] == 'n' ? "Northbound".color(:yellow) : "Southbound".color(:yellow)
+				print row[0][-1,1] == "N" ? "Northbound".color(:yellow) : "Southbound".color(:yellow)
 				print " #{row[0][0].to_s} Train".color(:magenta)
 				puts " at #{row[1].color(:red)}"
         options.push(row)
