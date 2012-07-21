@@ -60,6 +60,7 @@ def promptStops(stopsCsv)
 		if (addedStops.length > 0) then
 			puts"Your Subway Stops:".color(:magenta)
 			addedStops .each do |stop|
+				print "--> ".color(:yellow)
 				puts "#{stop[0]} - #{stop[1]}".color(:green)
 			end
 			print "\n\n"
