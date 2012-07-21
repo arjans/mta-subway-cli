@@ -75,6 +75,19 @@ def main
 
 	puts "generateStops.rb ::".color(:red) + " Generates a consise CSV database for subway.rb".color(:yellow)
 	puts "-----------------------------------------------------------------"
+
+	if (ARGV[0]) then
+		$outputFile = ARGV[0]
+	elsif (File.exists?($outputFile)) then
+		print "#{$outputFile} already exists. Continue/Overwrite? [Y/N]: ".color(:red)
+		if (!(gets.chomp! =~ /y/i)) then
+			puts "Please rerun generateStops.rb with a non-existant file"
+			return
+		end
+	end
+
+	puts "--> Generated file will be stored in #{$outputFile.color(:red)}".color(:green)
+
 	puts "--> Fetching Subway Data from the MTA Site".color(:green);
 	Net::HTTP.start(mtaDomain) do |http|
 		Zip::Archive.open_buffer(http.get(subwayData).response.body) do |zip|
