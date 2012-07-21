@@ -12,10 +12,21 @@ Setup
 3. Run generateStops.rb:     ```ruby generateStops.rb```
 4. That's it, Use subway.rb: ```ruby subway.rb```
 
+Usage
+-----
+```subway.rb stop-name [north/south]```
+- ```-n #```: Specifies the number of upcoming stops to output
+- ```-no-color```: Removes color from the output
+
+**Examples:**
+- ```./subway.rb prospect north```
+- ```./subway.rb york s```
+- ```./subway```
+
 Requirements & Dependencies
 ---------------------------
 - Ruby >=1.8.7
-- zipruby gem
+- [zipruby Gem](http://bitbucket.org/winebarrel/zip-ruby)
 
 
 Authors
