@@ -2,6 +2,7 @@
 require 'csv'
 
 $filename = "stops.csv"
+$colorsEnabled = true
 
 class String
   def color(c)
@@ -16,11 +17,15 @@ class String
       :white   => 37,
       :orange  => 91
     }
-    return "\e[#{colors[c] || c}m#{self}\e[0m"
+    if ($colorsEnabled) then
+      return "\e[#{colors[c] || c}m#{self}\e[0m"
+    else
+      return self
     end
+  end
 end
 
-def getStopTimes (stopID, stops)
+def getStopTimes (stopID, stops, numTimes)
   case Time.now.wday
 	  when 0 then day = "SUN"
 	  when 6 then day = "SAT"
@@ -80,7 +85,7 @@ def getStopTimes (stopID, stops)
         end
         print "#{hours}:#{minutes}:#{seconds} "
         counter += 1
-        if (counter == 3) then
+        if (counter == numTimes) then
           puts ""
           return true
         end
@@ -102,6 +107,14 @@ def main
 
   stops = loadStopsFile($filename)
   uniqueStops = []
+  numTimes = 3
+
+  if (ARGV.include?("-n"))
+    numTimesIndex = ARGV.index("-n") + 1
+    numTimes = ARGV[numTimesIndex]
+    ARGV.delete_at(numTimesIndex)
+    ARGV.delete("-n")
+  end
 
   if (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) then
     stops.each do |row|
@@ -121,10 +134,25 @@ def main
     end
   end
 
-  if (ARGV[0]) then
+  if (ARGV.include?("--no-color"))
+  then
+    $colorsEnabled = false
+    ARGV.delete("--no-color")
+  end
+
+  clOption = false
+  if (ARGV) then
+    ARGV.each do |arg|
+      if (arg.match('.*'))
+        clOption = true
+      end
+    end
+  end
+
+  if (clOption) then
     stops.each do |row|
       if (row[1].downcase.match(ARGV[0].downcase) && !(uniqueStops.include?(row[0])))
-        getStopTimes(row[0], stops)
+        getStopTimes(row[0], stops, numTimes.to_i)
         uniqueStops.push(row[0])
       end
     end
@@ -135,7 +163,7 @@ def main
       end
     end
     uniqueStops.each do |row|
-      getStopTimes(row, stops)
+      getStopTimes(row, stops, numTimes.to_i)
     end
   end
 end
