@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 require 'csv'
 
-$filename = "milstops.csv"
+$filename = "stops.csv"
 $colorsEnabled = true
 
 class String
