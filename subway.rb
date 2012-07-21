@@ -89,7 +89,7 @@ def getStopTimes (stopID, stops)
   end
 end
 
-def loadStopsFile ($filename)
+def loadStopsFile (filename)
   stops =  CSV.read($filename)
   return stops
 end
