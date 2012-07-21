@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 require 'csv'
 
-$filename = "stops.csv"
+$filename = "milstops.csv"
 $colorsEnabled = true
 
 class String
@@ -44,7 +44,7 @@ def getStopTimes (stopID, stops, numTimes)
   when "G"
     subwayColor = 102
   when "N", "Q", "R"
-    subwayColor = 43
+    subwayColor = 103
   when "A", "C", "E"
     subwayColor = 44
   when "J", "Z"
@@ -116,6 +116,12 @@ def main
     ARGV.delete("-n")
   end
 
+  if (ARGV.include?("--no-color"))
+  then
+    $colorsEnabled = false
+    ARGV.delete("--no-color")
+  end
+
   if (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) then
     stops.each do |row|
       if (row[1].downcase.match(ARGV[0].downcase) && (row[0][-1,1] == "S"))
@@ -132,12 +138,6 @@ def main
         break
       end
     end
-  end
-
-  if (ARGV.include?("--no-color"))
-  then
-    $colorsEnabled = false
-    ARGV.delete("--no-color")
   end
 
   clOption = false
