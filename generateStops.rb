@@ -29,35 +29,31 @@ end
 def generateStopsFile (userStops, stopTimesCsv)
 	printHeader
 
-  puts "--> Generating Stops CSV".color(:green)
+	puts "--> Generating Stops CSV".color(:green)
 	puts "    (This may take a little while, go brew some coffee)"
 	puts "    (No worries, this is a one time proccess)"
 
-  CSV.open($outputFile, "wb") do |csv|
-    csv << ["stop_id", "day", "time"]
-    CSV.parse(stopTimesCsv) do |row|
-      userStops.each do |stop|
-        if (stop[0] == row[3]) then
-          day = row[0].match(/^[ABRS]\d+(WKD|SAT|SUN)/)[1]
-          hours,minutes,seconds = row[1].split(':')
-          seconds = seconds.to_i + (hours.to_i * 3600) + (minutes.to_i * 60)
+	CSV.open($outputFile, "wb") do |csv|
+		csv << ["stop_id", "day", "time"]
+		CSV.parse(stopTimesCsv) do |row|
+			userStops.each do |stop|
+				if (stop[0] == row[3]) then
+					day = row[0].match(/^[ABRS]\d+(WKD|SAT|SUN)/)[1]
+					hours,minutes,seconds = row[1].split(':')
+					seconds = seconds.to_i + (hours.to_i * 3600) + (minutes.to_i * 60)
 					csv << [row[3], stop[1], day, seconds]
-        end
-      end
-    end
-  end
+				end
+			end
+		end
+	end
 
 	printHeader
 	puts "--> Stops CSV File Generated to #{$outputFile}, subway.rb may be used now".color(:green)
 end
 
-def getDirection(stopId)
-	return stopId[-1,1] == "N" ? "Northbound" : "Southbound"
-end
-
 def stopInfo(stopId, stopLabel)
-	       info  = "#{getDirection(stopId)}".color(:yellow)
-	       info += " #{stopId.chr} Train ".color(:magenta)
+	info  = "#{stopId[-1,1] == "N" ? "North" : "South"}bound".color(:yellow)
+	info += " #{stopId.chr} Train ".color(:magenta)
 	return info += "at #{stopLabel} ".color(:red)
 end
 
@@ -65,8 +61,8 @@ def promptStops(stopsCsv)
 	allstops = CSV.parse(stopsCsv).collect { |row| [row[0],row[2]] }
 
 	#Continually add stops to added stops until 'done'
-  addedStops = []
-  loop do
+	addedStops = []
+	loop do
 
 		#Print Header & Current Stops Added
 		printHeader
@@ -77,12 +73,12 @@ def promptStops(stopsCsv)
 		end
 
 		#Prompt User for a stop to add
-    print "Add a Subway Stop (ex: York, Prospect, 7 Ave) (or \"done\")\n> "
+		print "Add a Subway Stop (ex: York, Prospect, 7 Ave) (or \"done\")\n> "
 		stopname = gets.downcase.chomp!
 
 		#End once user types done
-    if (stopname == "done") then
-      return addedStops 
+		if (stopname == "done") then
+			return addedStops 
 
 
 		else
@@ -94,14 +90,14 @@ def promptStops(stopsCsv)
 					options.push(row)
 				end
 			end
-    print "\nEnter desired #{"[stop numbers]".color(:green)}, separated by spaces (ex: 0 2 5)\n> "
-    gets.chomp!.split(' ').each do |choice|
-			if (choice.to_i <= options.length) then
-				addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
+			print "\nEnter desired #{"[stop numbers]".color(:green)}, separated by spaces (ex: 0 2 5)\n> "
+			gets.chomp!.split(' ').each do |choice|
+				if (choice.to_i <= options.length) then
+					addedStops.push([options[choice.to_i][0],options[choice.to_i][1]])
+				end
 			end
-    end
 		end
-  end
+	end
 end
 
 def main
