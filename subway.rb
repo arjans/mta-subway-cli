@@ -52,7 +52,7 @@ def getStopTimes (stopID, stops, numTimes)
 		if (row[0] == stopID && row[2] == day) then
 			seconds = row[3].to_i
 			if (seconds > time) then
-				seconds = $timeOption == "relative" ? seconds -= time : time
+				seconds = $timeOption == "relative" ? seconds -= time : seconds 
 
 				hours = seconds / 3600
 				minutes = (seconds / 60) - (hours * 60)
@@ -64,7 +64,7 @@ def getStopTimes (stopID, stops, numTimes)
 
 
 				if ($timeOption == "relative") then
-					prefix = "\n   in "
+					prefix = numTimes > 1 ? "\n   in " : "in "
 					hours = hours > 0 ? "#{hours} Hours " : ""
 					minutes = "#{minutes} Minutes" if (minutes > 0)
 					minutes = "#{minutes} and "  if (hours || minutes)
