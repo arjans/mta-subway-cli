@@ -78,8 +78,7 @@ def getStopTimes (stopID, stops, numTimes)
 
 				print "#{prefix}#{hours}#{minutes}#{seconds}#{ampm} "      
 
-				counter += 1
-				if (counter == numTimes) then
+				if ((counter+=1) == numTimes) then
 					puts ""
 					return true
 				end
@@ -135,8 +134,7 @@ def main
 				uniqueStops.push(row[0])
 			end
 		end
-		uniqueStops.sort!
-		uniqueStops.each do |row|
+		uniqueStops.sort!.each do |row|
 			getStopTimes(row, stops, numTimes.to_i)
 		end
 	end

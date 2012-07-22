@@ -2,9 +2,9 @@ MTA Subway CLI
 ==============
 ![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
 
-This is a simple command line interface to the NYC MTA Subways. The jist of it is you can do something like ```subway.rb york north``` and you'll get the next few subway times for York Street Northbound.
+This is a simple command line interface to the NYC MTA Subways. The jist of it is you can do something like ```subway.rb york north``` and you'll get the next few subway times for York Street Northbound. ```subway.rb``` may be used with several command line options such that you can specify: the number of upcoming times, 24hr/12hr clock, relative times (next subway in 12 minutes), and a no color option for scripting.
 
-The one caveat is that you have to generate a stops.csv file from MTA's Open Subway data. This is necessary as parsing through ~5MB of data each run is not reasonable. generateStops.rb faciliates generating a concise CSV file (stops.csv) containing only the stop times necessary for you.
+The one caveat is that you have to fetch and download MTA's Subway data prior to first use. This is handled by the included script called ```generateStops.rb```. ```generateStops.rb``` generates a ```stops.csv``` file from MTA's Open Subway data. ```generateStops.rb``` will prompt you for the stops you'd like to be able to use ```subway.rb```. ```generateStops.rb``` may be re-run at any time to re-fetch the most up to date MTA Subway data and regenerate ```stops.csv```.
 
 Setup
 -----
@@ -19,7 +19,7 @@ Usage
 **subway.rb** stop-name *[north/south]*
 - ```-n #```: Specifies the number of upcoming times for each stop
 - ```--military```: Displays time in 24 hour format (ex: 15:30:20)
-- ```--relative```: Display times relative to the current time (ex: 14 minutes)
+- ```--relative```: Display times relative to the current time (ex: 14 Minutes)
 - ```--no-color```: Removes color from the output
 
 **Examples:**
@@ -38,7 +38,8 @@ Requirements & Dependencies
 ---------------------------
 - Ruby >=1.8.7
 - [zipruby Gem](http://bitbucket.org/winebarrel/zip-ruby)
+	* Used to extract the ZIP of MTA's Subway Data to generate ```stops.csv```
 
 Authors
 -------
-Created by Arjan Singh ([jns2](http://github.com/jns2)) and Miles Sandlar ([mil](http://github.com/mil))
+Created by Arjan Singh ([jns2](http://github.com/jns2)) and Miles Sandlar ([mil](http://github.com/mil)) during [Hacker School [3]](http://hackerschool.com)
