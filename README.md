@@ -22,13 +22,13 @@ Usage
 
 **Examples:**
 
-- ```./subway```
+- $ ```./subway``` 
     * ![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
 
-- ```./subway.rb herald north```
+- $ ```./subway.rb herald north```
     * ![MTA Subway CLI Herald North](http://userbound.com/images/mta-subway-cli/herald-north.png)
 
-- ```./subway.rb york s```
+- $ ```./subway.rb york s```
     * ![MTA Subway CLI 33 S](http://userbound.com/images/mta-subway-cli/33-s.png)
 
 
