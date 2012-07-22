@@ -5,7 +5,7 @@ require 'csv'
 require 'net/http'
 
 $mtaSubwayData = "mta.info/developers/data/nyct/subway/google_transit.zip"
-$outputFile = "stops.csv"
+$outputFile = ARGV[0] ? ARGV[0] : "stops.csv"
 
 class String
 	def color(c)
@@ -23,7 +23,7 @@ end
 def printHeader
 	system("clear")
 	puts "generateStops.rb ::".color(:green) + " Generates a consise CSV database for subway.rb".color(:yellow)
-	puts "-----------------------------------------------------------------"
+	puts "------------------------------------------------------------------"
 end
 
 def generateStopsFile (userStops, stopTimesCsv)
@@ -102,40 +102,34 @@ end
 
 def main
 
-	printHeader
-	$outputFile = ARGV[0] ? ARGV[0] : $outputFile
-
+	# Check if output file already exists, prompt if so, if no then continue
 	if (File.exists?($outputFile)) then
+		printHeader
 		print "#{$outputFile} already exists. Continue/Overwrite? [Y/N]: ".color(:red)
 		if (!(gets.chomp! =~ /y/i)) then
 			puts "Please rerun generateStops.rb with a non-existant file"
 			return
 		end
 	end
-	printHeader
 
+	# Print Generating file
+	printHeader
 	puts "--> Generated file will be stored in #{$outputFile.color(:red)}".color(:green)
 
-	puts "--> Fetching Subway Data from the MTA Site".color(:green);
-	puts "    (This may take a bit, the ZIP is around 5MB)"
-	puts "    (I hope you gots good internets)"
 
-	#Split up URL for Net:HTTP
+	# Split up URL for Net:HTTP
 	mtaDomain  = $mtaSubwayData.split('/')[0]
 	subwayData = $mtaSubwayData[mtaDomain.length .. $mtaSubwayData.length]
 
-	#Open Mta site, download zip, and go
 	Net::HTTP.start(mtaDomain) do |http|
+		# Fetch the ZIP file from the MTA Site
+		puts "--> Fetching Subway Data from the MTA Site".color(:green);
+		puts "    (This may take a bit, the ZIP is around 5MB)"
+		puts "    (I hope you gots good internets)"
+
 		Zip::Archive.open_buffer(http.get(subwayData).response.body) do |zip|
-
-			#Get the stop ids based on user input
-			stopsCsv = zip.fopen("stops.txt").read
-			stops = promptStops(stopsCsv)
-
-			#Get the stop times
-			stopTimesCsv = zip.fopen("stop_times.txt").read
-
-			generateStopsFile(stops, stopTimesCsv)
+			stops = promptStops(zip.fopen("stops.txt").read)
+			generateStopsFile(stops, zip.fopen("stop_times.txt").read)
 		end
 	end
 end
