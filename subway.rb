@@ -44,30 +44,40 @@ def getStopTimes (stopID, stops, numTimes)
 
 	stops.each do |row|
 		if (row[0] == stopID) then
-			print " arriving at #{row[1].color(32)} at "
+			print " arriving at #{row[1].color(32)} "
 			break
 		end
 	end
 	stops.each do |row|
 		if (row[0] == stopID && row[2] == day) then
-			if (row[3].to_i > time) then
-				if ($timeOption == "relative") then
+			seconds = row[3].to_i
+			if (seconds > time) then
+				seconds = $timeOption == "relative" ? seconds -= time : time
 
-				else 
-					hours = row[3].to_i / 3600
-					minutes = (row[3].to_i - (hours * 3600)) / 60
-					seconds = (row[3].to_i - (hours * 3600) - (minutes * 60))	
-					if ($timeOption == "AMPM") then
-						ampm = (hours > 12) ? "PM" : "AM"
-						hours = hours - 12 if (hours > 12)
-					end
-					minutes = "0" + minutes.to_s if (minutes < 10)
-					seconds = "0" + seconds.to_s if (seconds < 10)
-
+				hours = seconds / 3600
+				minutes = (seconds / 60) - (hours * 60)
+				seconds = seconds - (hours * 3600) - (minutes * 60)
+				if ($timeOption == "AMPM") then
+					ampm = (hours > 12) ? "PM" : "AM"
+					hours = hours - 12 if (hours > 12)
 				end
 
 
-				print "#{hours}:#{minutes}:#{seconds}#{ampm} "
+				if ($timeOption == "relative") then
+					prefix = "\n   in "
+					hours = hours > 0 ? "#{hours} Hours " : ""
+					minutes = "#{minutes} Minutes" if (minutes > 0)
+					minutes = "#{minutes} and "  if (hours || minutes)
+					seconds = "#{seconds} Seconds" if (seconds > 0)
+				else
+					prefix = "at "
+					hours = "#{hours}:" if (hours)
+					minutes = minutes < 10 ? "0#{minutes}:" : "#{minutes}:"
+					seconds = seconds < 10 ? "0#{seconds}:" : "#{seconds}"
+				end
+
+				print "#{prefix}#{hours}#{minutes}#{seconds}#{ampm} "      
+
 				counter += 1
 				if (counter == numTimes) then
 					puts ""
