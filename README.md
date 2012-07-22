@@ -22,7 +22,7 @@ Usage
 
 **Examples:**
 
-- ```./subway```
+- ```./subway``` 
     * ![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
 
 - ```./subway.rb herald north```
