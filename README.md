@@ -17,7 +17,9 @@ Setup
 Usage
 -----
 **subway.rb** stop-name *[north/south]*
-- ```-n #```: Specifies the number of upcoming stops to output
+- ```-n #```: Specifies the number of upcoming times for each stop
+- ```--military```: Displays time in 24 hour format (ex: 15:30:20)
+- ```--relative```: Display times relative to the current time (ex: 14 minutes)
 - ```--no-color```: Removes color from the output
 
 **Examples:**
