@@ -70,7 +70,10 @@ end
 
 def main
 
-  puts "Please run 'generateStops.rb'." if (!File.exists?($filename))
+  if (!File.exists?($filename))
+    puts "Please run 'generateStops.rb'"
+    return
+  end
 
   stops = loadStopsFile($filename)
   uniqueStops = []
