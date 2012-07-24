@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 require 'csv'
+require 'nokogiri'
+require 'open-uri'
 
 $filename = "stops.csv"
 $colorsEnabled = true
 $timeOption = "AMPM"
+$statusUpdates = false
 
 class String
   def color(c)
@@ -87,6 +90,29 @@ def getStopTimes (stopID, stops, numTimes)
   end
 end
 
+def getStatusUpdates (stops)
+  if ($statusUpdates) then
+    filestring = ''
+    f = (open ('http://www.mta.info/status/serviceStatus.txt'))
+    f.each do |line|
+      filestring += line
+    end
+    filestring.gsub!(/                    &lt;/, "<").gsub!(/                    &amp;nbsp;/, "").gsub!(/&lt;/, "<").gsub!(/&gt;/, ">").gsub!(/&amp;nbsp;/, " ").gsub!(/                /, "")
+    doc = Nokogiri::HTML(filestring)
+    uniqueLines = []
+    stops.each do |row|
+      doc.xpath('//subway//name').each do |name|
+        if (/#{row[0][0]}/.match(name) && !(uniqueLines.include?(name)))
+          statusArray = name.next_sibling.next_sibling.text.split("\n")
+          statusArray = statusArray.drop(3)
+          puts statusArray
+          uniqueLines.push(name)
+        end
+      end
+    end
+  end
+end
+
 def main
 
   if (!File.exists?($filename))
@@ -122,6 +148,11 @@ def main
     ARGV.delete("--relative")
   end
 
+  if (ARGV.include?("--status")) then
+    $statusUpdates = true
+    ARGV.delete("--status")
+  end
+
   excludeDirection = (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) ? "S" : excludeDirection
   excludeDirection = (ARGV.include?("S") || ARGV.include?("s") || ARGV.include?("South") || ARGV.include?("south")) ? "N" : excludeDirection
 
@@ -132,6 +163,7 @@ def main
         uniqueStops.push(row[0])
       end
     end
+    getStatusUpdates(uniqueStops.sort!)
   else
     stops.each do |row|
       if (!uniqueStops.include?(row[0]) && !("stop_id" == row[0])) then
@@ -141,6 +173,7 @@ def main
     uniqueStops.sort!.each do |row|
       getStopTimes(row, stops, numTimes.to_i)
     end
+    getStatusUpdates(uniqueStops.sort!)
   end
 end
 
