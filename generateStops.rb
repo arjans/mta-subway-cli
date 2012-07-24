@@ -121,7 +121,7 @@ end
 def generateLines(stopTimesCsv)
   printHeader
   puts "--> Determining Lines Running at Each Station".color(:green)
-  puts "    (Sorry for the delay, Parsing a 31MB CSV File"
+  puts "    (Sorry for the delay, Parsing a 31MB CSV File)"
   puts "    (Hopefully this won't take too long)"
 
   CSV.parse(stopTimesCsv) do |row|
