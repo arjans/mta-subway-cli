@@ -2,6 +2,7 @@
 require 'csv'
 require 'nokogiri'
 require 'open-uri'
+require 'pp'
 
 $filename = "stops.csv"
 $colorsEnabled = true
@@ -19,7 +20,7 @@ def loadStopsFile (filename)
   return stops
 end
 
-def getStopTimes (stopID, stops, numTimes)
+def getStopTimes (stopandline, stops, numTimes)
   case Time.now.wday
   when 0 then day = "SUN"
   when 6 then day = "SAT"
@@ -29,7 +30,7 @@ def getStopTimes (stopID, stops, numTimes)
   time = (Time.now.hour * 3600) + (Time.now.min * 60) + Time.now.sec
   counter = 0
 
-  case stopID[0].chr
+  case stopandline[1]
   when "B", "D", "F", "M" then subwayColor = 101
   when "1", "2", "3"      then subwayColor = 41
   when "4", "5", "6"      then subwayColor = 42
@@ -40,20 +41,20 @@ def getStopTimes (stopID, stops, numTimes)
   when "7"                then subwayColor = 45
   end
 
-  direction = (stopID[-1,1] == "N") ? "Northbound ".color(40).color(37): "Southbound ".color(40).color(37)
+  direction = (stopandline[0][-1,1] == "N") ? "Northbound ".color(40).color(37): "Southbound ".color(40).color(37)
 
   print "#{direction}"
-  print " #{stopID[0].chr} ".color(subwayColor).color(97)
+  print " #{stopandline[1]} ".color(subwayColor).color(97)
 
   stops.each do |row|
-    if (row[0] == stopID) then
-      print " arriving at #{row[1].color(32)} "
+    if (row[0] == stopandline[0]) then
+      print " arriving at #{row[2].color(32)} "
       break
     end
   end
   stops.each do |row|
-    if (row[0] == stopID && row[2] == day) then
-      seconds = row[3].to_i
+    if (row[0] == stopandline[0] && stopandline[1] == row[1] && row[3] == day) then
+      seconds = row[4].to_i
       if (seconds > time) then
         seconds = $timeOption == "relative" ? seconds -= time : seconds
 
@@ -153,24 +154,38 @@ def main
     ARGV.delete("--status")
   end
 
-  excludeDirection = (ARGV.include?("N") || ARGV.include?("n") || ARGV.include?("North") || ARGV.include?("north")) ? "S" : excludeDirection
-  excludeDirection = (ARGV.include?("S") || ARGV.include?("s") || ARGV.include?("South") || ARGV.include?("south")) ? "N" : excludeDirection
+  excludeDirection = (ARGV.include?("North") || ARGV.include?("north")) ? "S" : excludeDirection
+  excludeDirection = (ARGV.include?("South") || ARGV.include?("south")) ? "N" : excludeDirection
+
+  userLine = false
+  ARGV.each do |elt|
+    if !(elt[1]) then
+      userLine = elt[0]
+    end
+  end
 
   if (ARGV.length > 0) then
     stops.each do |row|
-      if (row[1].downcase.match(ARGV[0].downcase) && !(uniqueStops.include?(row[0])) && !(row[0][-1,1] == excludeDirection))
-        getStopTimes(row[0], stops, numTimes.to_i)
-        uniqueStops.push(row[0])
+      if (row[2].downcase.match(ARGV[0].downcase) && !(uniqueStops.include?([row[0],row[1]])) && !(row[0][-1,1] == excludeDirection))
+        if userLine then
+          if (row[1] == userLine.upcase) then
+            getStopTimes([row[0],row[1]], stops, numTimes.to_i)
+            uniqueStops.push([row[0],row[1]])
+          end
+        else
+          getStopTimes([row[0],row[1]], stops, numTimes.to_i)
+          uniqueStops.push([row[0],row[1]])
+        end
       end
     end
     getStatusUpdates(uniqueStops.sort!)
   else
     stops.each do |row|
-      if (!uniqueStops.include?(row[0]) && !("stop_id" == row[0])) then
-        uniqueStops.push(row[0])
+      if (!uniqueStops.include?([row[0],row[1]]) && !("id" == row[0])) then
+        uniqueStops.push([row[0],row[1]])
       end
     end
-    uniqueStops.sort!.each do |row|
+    uniqueStops.sort!{|x,y| x[0] <=> y[0]}.each do |row|
       getStopTimes(row, stops, numTimes.to_i)
     end
     getStatusUpdates(uniqueStops.sort!)
