@@ -91,22 +91,34 @@ def getStopTimes (stopandline, stops, numTimes)
   end
 end
 
-def getStatusUpdates (stops)
+def getStatusUpdates (stops, allUpdates)
   if ($statusUpdates) then
-    filestring = ''
+    filestring = ""
     f = (open ('http://www.mta.info/status/serviceStatus.txt'))
     f.each do |line|
       filestring += line
     end
-    filestring.gsub!(/                    &lt;/, "<").gsub!(/                    &amp;nbsp;/, "").gsub!(/&lt;/, "<").gsub!(/&gt;/, ">").gsub!(/&amp;nbsp;/, " ").gsub!(/                /, "")
+#    filestring.gsub!(/                    &lt;/, "<").gsub!(/                    &amp;nbsp;/, "")
+    filestring.gsub!(/&lt;/, "<").gsub!(/&gt;/, ">").gsub!(/&amp;nbsp;/, " ").gsub!(/&amp;/, "")
     doc = Nokogiri::HTML(filestring)
     uniqueLines = []
     stops.each do |row|
       doc.xpath('//subway//name').each do |name|
-        if (/#{row[0][0]}/.match(name) && !(uniqueLines.include?(name)))
-          statusArray = name.next_sibling.next_sibling.text.split("\n")
-          statusArray = statusArray.drop(3)
-          puts statusArray
+        if (/#{row[1]}/.match(name) && !(uniqueLines.include?(name)) && !(name.text == "SIR"))
+          print name.text.color(31)
+          print ": "
+          puts name.next_sibling.text.color(31)
+          if (allUpdates)
+            statusArray = name.next_sibling.next_sibling.text.split("\n").drop(2)
+            statusArray.each do |child|
+              puts child.color(31)
+            end
+          elsif(/\[#{row[1]}\]/.match(name.next_sibling.next_sibling.text))
+            statusArray = name.next_sibling.next_sibling.text.split("\n").drop(2)
+            statusArray.each do |child|
+              puts child.color(31)
+            end
+          end
           uniqueLines.push(name)
         end
       end
@@ -178,7 +190,7 @@ def main
         end
       end
     end
-    getStatusUpdates(uniqueStops.sort!)
+    getStatusUpdates(uniqueStops.sort!,false)
   else
     stops.each do |row|
       if (!uniqueStops.include?([row[0],row[1]]) && !("id" == row[0])) then
@@ -188,7 +200,7 @@ def main
     uniqueStops.sort!{|x,y| x[0] <=> y[0]}.each do |row|
       getStopTimes(row, stops, numTimes.to_i)
     end
-    getStatusUpdates(uniqueStops.sort!)
+    getStatusUpdates(uniqueStops,true)
   end
 end
 
