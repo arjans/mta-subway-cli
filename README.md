@@ -10,14 +10,15 @@ Setup
 -----
 1. Clone the repo:           ```git clone http://github.com/jns2/mta-subway-cli```
 2. Go into the directory:    ```cd mta-subway-cli```
-3. Install the zipruby gem:  ```gem install zipruby```
+3. Install gems:  ```gem install zipruby nokogiri```
 3. Run generateStops.rb:     ```ruby generateStops.rb```
 4. That's it, Use subway.rb: ```ruby subway.rb```
 
 Usage
 -----
-**subway.rb** stop-name *[north/south]*
+**subway.rb** stop-name *[line]* *[north/south]*
 - ```-n #```: Specifies the number of upcoming times for each stop
+- ```--status```: Shows an up to date status update for the given subway line
 - ```--military```: Displays time in 24 hour format (ex: 15:30:20)
 - ```--relative```: Display times relative to the current time (ex: 14 Minutes)
 - ```--no-color```: Removes color from the output
@@ -27,10 +28,10 @@ Usage
 - $ ```./subway``` 
     * ![MTA Subway CLI](http://userbound.com/images/mta-subway-cli/3-stations.png)
 
-- $ ```./subway.rb herald north```
+- $ ```./subway.rb herald d south```
     * ![MTA Subway CLI Herald North](http://userbound.com/images/mta-subway-cli/herald-north.png)
 
-- $ ```./subway.rb york s```
+- $ ```./subway.rb 6 south 33 st```
     * ![MTA Subway CLI 33 S](http://userbound.com/images/mta-subway-cli/33-s.png)
 
 
@@ -39,6 +40,8 @@ Requirements & Dependencies
 - Ruby >=1.8.7
 - [zipruby Gem](http://bitbucket.org/winebarrel/zip-ruby)
 	* Used to extract the ZIP of MTA's Subway Data to generate ```stops.csv```
+- [Nokogiri Gem](http://nokogiri.org)
+	* Used to fetch subway status updates from the MTA site
 
 Authors
 -------
