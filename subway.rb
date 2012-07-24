@@ -2,7 +2,6 @@
 require 'csv'
 require 'nokogiri'
 require 'open-uri'
-require 'pp'
 
 $filename = "stops.csv"
 $colorsEnabled = true
